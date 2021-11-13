@@ -18,11 +18,13 @@ class User extends Migration
             function (Blueprint $table) {
                 $table->id();
                 $table->string('role');
+                $table->string('remember_token');
                 $table->string('login');
                 $table->string('password');
                 $table->string('firstname');
                 $table->string('lastname');
                 $table->string('avatar');
+                $table->dateTime('updated_at');
             }
         );
     }
