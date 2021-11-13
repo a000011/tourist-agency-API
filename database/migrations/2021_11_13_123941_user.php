@@ -25,6 +25,7 @@ class User extends Migration
                 $table->string('lastname');
                 $table->string('avatar');
                 $table->dateTime('updated_at');
+                $table->dateTime('created_at');
             }
         );
     }
