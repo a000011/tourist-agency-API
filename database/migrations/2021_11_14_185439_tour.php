@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class User extends Migration
+class Tour extends Migration
 {
     /**
      * Run the migrations.
@@ -14,16 +14,12 @@ class User extends Migration
     public function up()
     {
         Schema::create(
-            'Users',
+            'Tour',
             function (Blueprint $table) {
                 $table->id();
-                $table->string('role');
-                $table->string('remember_token')->nullable();
-                $table->string('login');
-                $table->string('password');
-                $table->string('firstname');
-                $table->string('lastname');
-                $table->string('avatar')->nullable();
+                $table->string('title');
+                $table->longText('description');
+                $table->longText('img')->nullable();
                 $table->dateTime('updated_at');
                 $table->dateTime('created_at');
             }

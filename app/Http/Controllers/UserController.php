@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Models\User as UserModel;
 
-class User extends Controller
+class UserController extends Controller
 {
     public function login(Request $request)
     {
@@ -35,7 +35,6 @@ class User extends Controller
 
     public function registration(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'login' => 'required',
             'password' => 'required',
@@ -54,8 +53,7 @@ class User extends Controller
 
             return response()->json(['status' => 'success'], 201);
         }
-
-        return $validator->errors();
+        return response()->json($validator->errors(), 400);
     }
 
     public function me(Request $request)
