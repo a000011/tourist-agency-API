@@ -9,5 +9,10 @@ class Tour extends Model
 {
     use HasFactory;
 
-    protected $table = 'Tour';
+    public function getComments()
+    {
+        return $this->belongsToMany(self::class, Comment::class, 'tour_id', 'id');
+    }
+
+    protected $table = 'tour';
 }

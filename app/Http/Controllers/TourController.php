@@ -44,7 +44,7 @@ class TourController extends Controller
         $tour = TourModel::find($id);
 
         if($tour !== null){
-            return $tour;
+            return array_merge($tour->toArray(), ['comments' => $tour->getComments]);
         }
 
         return response()->json(['status' => 'not found'], 404);
