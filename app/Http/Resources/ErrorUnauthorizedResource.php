@@ -17,7 +17,7 @@ class ErrorUnauthorizedResource extends JsonResource
         return [
             'code' => 401,
             'errors' => [
-                'Unauthorized'
+                'auth' => 'Unauthorized'
             ]
         ];
     }

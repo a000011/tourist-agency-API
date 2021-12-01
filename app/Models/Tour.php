@@ -4,14 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Comment as CommentModel;
 
 class Tour extends Model
 {
     use HasFactory;
 
-    public function getComments()
+    public function comments()
     {
-        return $this->belongsToMany(self::class, Comment::class, 'tour_id', 'id');
+        return $this->hasMany(CommentModel::class);
     }
 
     protected $table = 'tour';

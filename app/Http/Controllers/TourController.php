@@ -43,8 +43,12 @@ class TourController extends Controller
     public function getTour($id){
         $tour = TourModel::find($id);
 
+        foreach ($tour->comments as $comment){
+            $user = $comment->user;
+        }
+
         if($tour !== null){
-            return array_merge($tour->toArray(), ['comments' => $tour->getComments]);
+            return $tour;
         }
 
         return response()->json(['status' => 'not found'], 404);
