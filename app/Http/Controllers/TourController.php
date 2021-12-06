@@ -43,11 +43,10 @@ class TourController extends Controller
     public function getTour($id){
         $tour = TourModel::find($id);
 
-        foreach ($tour->comments as $comment){
-            $user = $comment->user;
-        }
-
         if($tour !== null){
+            foreach ($tour->comments as $comment){
+                $comment->user;
+            }
             return $tour;
         }
 

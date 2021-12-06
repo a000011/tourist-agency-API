@@ -19,6 +19,7 @@ class Comment extends Migration
                 $table->id();
                 $table->integer('user_id');
                 $table->integer('tour_id');
+                $table->integer('mark');
                 $table->string('content');
             }
         );
