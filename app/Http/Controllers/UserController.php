@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ErrorUnauthorizedResource;
 use App\Http\Resources\UserResource;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -100,10 +101,20 @@ class UserController extends Controller
         );
 
     }
-
+    
     public function me(Request $request)
     {
-        return response()->json(new UserResource($request->user()));
+        $userInfo = (new UserResource($request->user()))->getArray();
+        $userComments = Comment::where('user_id', $request->user()['id'])->get();
+        $userInfo['comments'] = [];
+        foreach ($userComments as $comment) {
+            $userInfo['comments'][] = [
+                'tourId' => $comment['tour_id'],
+                'content' => $comment['content']
+            ];
+        }
+
+        return response()->json($userInfo);
     }
 }
 

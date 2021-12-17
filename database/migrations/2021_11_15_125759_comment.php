@@ -21,6 +21,8 @@ class Comment extends Migration
                 $table->integer('tour_id');
                 $table->integer('mark');
                 $table->string('content');
+                $table->dateTime('updated_at');
+                $table->dateTime('created_at');
             }
         );
     }

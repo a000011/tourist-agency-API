@@ -20,4 +20,13 @@ class UserResource extends JsonResource
             'avatar' => $this->avatar,
         ];
     }
+
+    public function getArray()
+    {
+        return [
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+            'avatar' => $this->avatar,
+        ];
+    }
 }
