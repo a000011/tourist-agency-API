@@ -15,5 +15,5 @@ class Tour extends Model
         return $this->hasMany(CommentModel::class);
     }
 
-    protected $table = 'tour';
+    protected $table = 'Tour';
 }
