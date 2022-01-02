@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Entities\LoginCredentialsEntity;
+use App\Entities\RegistrationCredentialsEntity;
+use App\Helpers\SerializeHelper;
 use App\Http\Resources\ErrorUnauthorizedResource;
 use App\Http\Resources\UserResource;
 use App\Models\Comment;
@@ -15,13 +18,19 @@ class UserController extends Controller
 {
     public function login(Request $request)
     {
+        $dtoRequest = (new SerializeHelper())->getObjectFromJson(
+            $request->getContent(),
+            LoginCredentialsEntity::class
+        );
+
         $validator = Validator::make($request->all(), [
             'login' => 'required|min:3',
             'password' => 'required|min:3',
         ]);
+
         if (!$validator->fails()) {
-            if ($user = UserModel::where('login', $request->login)->first()) {
-                if(Hash::check($request->password, $user->password)){
+            if ($user = UserModel::where('login', $dtoRequest->getLogin())->first()) {
+                if (Hash::check($dtoRequest->getPassword(), $user->password)) {
                     $token = Str::random(60);
                     if (!UserModel::where('remember_token', $token)->first()) {
                         $user->remember_token = $token;
@@ -42,8 +51,8 @@ class UserController extends Controller
             [
                 'code' => 400,
                 'errors' => array_map(
-                    function($errors){
-                        foreach($errors as $key=>$value){
+                    function ($errors) {
+                        foreach ($errors as $key => $value) {
                             return $value;
                         }
                     },
@@ -56,6 +65,11 @@ class UserController extends Controller
 
     public function registration(Request $request)
     {
+        $dtoRequest = (new SerializeHelper())->getObjectFromJson(
+            $request->getContent(),
+            RegistrationCredentialsEntity::class
+        );
+
         $validator = Validator::make($request->all(), [
             'login' => 'required|min:3',
             'password' => 'required|min:3',
@@ -64,23 +78,15 @@ class UserController extends Controller
         ]);
 
         if (!$validator->fails()) {
-            if(UserModel::where('login', $request->login)->first() !== null){
-                return response()->json(
-                    [
-                        'code' => 400,
-                        'errors' => [
-                            'login' => 'login is already taken'
-                        ]
-                    ],
-                    400
-                );
+            if (UserModel::where('login', $dtoRequest->getLogin())->first() !== null) {
+                return response()->json(['code' => 400, 'errors' => ['login' => 'login is already taken']], 400);
             }
             $newUser = new UserModel();
             $newUser->role = 'user';
-            $newUser->login = $request->login;
-            $newUser->password = Hash::make($request->password);
-            $newUser->firstname = $request->firstname;
-            $newUser->lastname = $request->lastname;
+            $newUser->login = $dtoRequest->getLogin();
+            $newUser->password = Hash::make($dtoRequest->getPassword());
+            $newUser->firstname = $dtoRequest->getFirstname();
+            $newUser->lastname = $dtoRequest->getLastname();
             $newUser->save();
 
             return response()->json(['status' => 'success'], 201);
@@ -89,19 +95,19 @@ class UserController extends Controller
             [
                 'code' => 400,
                 'errors' => array_map(
-                        function($errors){
-                            foreach($errors as $key=>$value){
-                                return $value;
-                            }
-                        },
-                        $validator->errors()->toArray()
-                    )
+                    function ($errors) {
+                        foreach ($errors as $key => $value) {
+                            return $value;
+                        }
+                    },
+                    $validator->errors()->toArray()
+                )
             ],
             400
         );
 
     }
-    
+
     public function me(Request $request)
     {
         $userInfo = (new UserResource($request->user()))->getArray();
@@ -110,7 +116,9 @@ class UserController extends Controller
         foreach ($userComments as $comment) {
             $userInfo['comments'][] = [
                 'tourId' => $comment['tour_id'],
-                'content' => $comment['content']
+                'content' => $comment['content'],
+                'mark' => $comment['mark']
+
             ];
         }
 
