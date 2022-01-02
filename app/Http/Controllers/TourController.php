@@ -49,21 +49,25 @@ class TourController extends Controller
     public function getTour($id)
     {
         $tour = TourModel::find($id);
+        $tour->mark = 0;
         $marksSum = 0;
         if ($tour !== null) {
-            foreach ($tour->comments as $comment) {
-                $comment->user;
-                $marksSum += $comment->mark;
-                if ($comment->user->avatar == null) {
-                    if ($comment->user->role === self::USER_ROLE) {
-                        $comment->user->avatar = self::HOST . '/storage/avatars/default/user.png';
-                    } elseif ($comment->user->role === self::ADMIN_ROLE) {
-                        $comment->user->avatar = self::HOST . '/storage/avatars/default/admin.png';
+            if(!$tour->comments->isEmpty()){
+                foreach ($tour->comments as $comment) {
+                    $comment->user;
+                    $marksSum += $comment->mark;
+                    if ($comment->user->avatar == null) {
+                        if ($comment->user->role === self::USER_ROLE) {
+                            $comment->user->avatar = self::HOST . '/storage/avatars/default/user.png';
+                        } elseif ($comment->user->role === self::ADMIN_ROLE) {
+                            $comment->user->avatar = self::HOST . '/storage/avatars/default/admin.png';
+                        }
                     }
                 }
+
+                $tour->mark = round($marksSum / count($tour->comments), 2);
             }
 
-            $tour->mark = round($marksSum / count($tour->comments), 2);
 
             return $tour;
         }
@@ -77,12 +81,14 @@ class TourController extends Controller
 
         foreach ($tours as $tour){
             $comments = Comment::where('tour_id', $tour->id)->get();
-            $marksSum = 0;
-            foreach ($comments as $comment) {
-                $marksSum += $comment->mark;
-            }
+            if(!$comments->isEmpty()){
+                $marksSum = 0;
+                foreach ($comments as $comment) {
+                    $marksSum += $comment->mark;
+                }
 
-            $tour->mark = round($marksSum / count($comments), 2);
+                $tour->mark = round($marksSum / count($comments), 2);
+            }
         }
 
         return $tours;

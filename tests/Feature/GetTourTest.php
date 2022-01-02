@@ -30,6 +30,21 @@ class GetTourTest extends TestCase
         );
     }
 
+    public function testGetTours(){
+        $token = $this->getUserToken();
+
+        $tours = $this->get('api/tour', [ 'Authorization' => 'Bearer ' . $token ]);
+
+        foreach ($tours->original as $tour){
+            self::assertNotEmpty($tour['id']);
+            self::assertNotEmpty($tour['title']);
+            self::assertNotEmpty($tour['description']);
+            self::assertNotEmpty($tour['img']);
+            self::assertNotEmpty($tour['updated_at']);
+            self::assertNotEmpty($tour['created_at']);
+        }
+    }
+
     private function getUserToken()
     {
         $faker = FakerFactory::create();

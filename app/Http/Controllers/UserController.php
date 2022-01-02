@@ -19,7 +19,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $dtoRequest = (new SerializeHelper())->getObjectFromJson(
-            $request->getContent(),
+            json_encode($request->toArray()),
             LoginCredentialsEntity::class
         );
 
