@@ -71,4 +71,8 @@ class GetTourTest extends TestCase
             $loginRequest
         )['token'];
     }
+
+    public function testBreakeTest(){
+        self::assertTrue(false);
+    }
 }
