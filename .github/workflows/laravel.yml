@@ -31,7 +31,7 @@ jobs:
         mkdir -p database
         touch database/database.sqlite
     - name: run DB seeders
-      run: php artisan db:seed
+      run: php artisan db:seed --force
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       env:
         DB_CONNECTION: sqlite
