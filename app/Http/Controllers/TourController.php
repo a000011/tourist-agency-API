@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Data\UserRoles;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use App\Models\Tour as TourModel;
@@ -9,16 +10,12 @@ use Illuminate\Support\Facades\Validator;
 
 class TourController extends Controller
 {
-    private const ADMIN_ROLE = 'admin';
-
-    private const USER_ROLE = 'user';
-
     private const HOST = 'http://10.0.2.2:8000';
 
     public function addTour(Request $request)
     {
 
-        if ($request->user()->role === self::ADMIN_ROLE) {
+        if ($request->user()->role === UserRoles::$ADMIN_ROLE) {
             $validator = Validator::make($request->all(), [
                 'title' => 'required',
                 'description' => 'required'
@@ -57,9 +54,9 @@ class TourController extends Controller
                     $comment->user;
                     $marksSum += $comment->mark;
                     if ($comment->user->avatar == null) {
-                        if ($comment->user->role === self::USER_ROLE) {
+                        if ($comment->user->role === UserRoles::$USER_ROLE) {
                             $comment->user->avatar = self::HOST . '/storage/avatars/default/user.png';
-                        } elseif ($comment->user->role === self::ADMIN_ROLE) {
+                        } elseif ($comment->user->role === UserRoles::$ADMIN_ROLE) {
                             $comment->user->avatar = self::HOST . '/storage/avatars/default/admin.png';
                         }
                     }
